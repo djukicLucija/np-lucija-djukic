@@ -48,7 +48,7 @@ Kao AI asistenta sam koristila Claude. Upit:
 - šest testova: dva za računanje i četiri za greške (prazan fajl, fali kolona, neispravna vrijednost, negativne noći)
 - `ruff format` je ispravio formatiranje (prazan red sa razmacima na kraju fajla)
 
-- ## Mini projekat 1: refaktoring obrade rezervacija
+ ## Mini projekat 1: refaktoring obrade rezervacija
 
 Polazni kod je klasa `UpravljanjeRezervacijama` sa vježbi (nedjelja 2). Ona je radila četiri stvari: učitavala fajl, računala iznos, čuvala izvještaj i slala mail. Zbog toga je imala četiri razloga za promjenu (kršenje principa S), a sama je otvarala konkretan fajl, pa se nije mogla testirati bez pravog fajla (kršenje principa D).
 
