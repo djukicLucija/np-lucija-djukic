@@ -1,0 +1,19 @@
+[project]
+name = "np-lucija-djukic"
+version = "0.1.0"
+description = "Napredno programiranje (FIST4NP), UDG"
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+dev = ["ruff", "pytest"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
