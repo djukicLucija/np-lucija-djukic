@@ -1,4 +1,3 @@
-%%writefile cijene.py
 import csv
 from pathlib import Path
 
