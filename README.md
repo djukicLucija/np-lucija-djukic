@@ -47,3 +47,48 @@ Kao AI asistenta sam koristila Claude. Upit:
 - provjera negativnih vrijednosti
 - šest testova: dva za računanje i četiri za greške (prazan fajl, fali kolona, neispravna vrijednost, negativne noći)
 - `ruff format` je ispravio formatiranje (prazan red sa razmacima na kraju fajla)
+
+- ## Mini projekat 1: refaktoring obrade rezervacija
+
+Polazni kod je klasa `UpravljanjeRezervacijama` sa vježbi (nedjelja 2). Ona je radila četiri stvari: učitavala fajl, računala iznos, čuvala izvještaj i slala mail. Zbog toga je imala četiri razloga za promjenu (kršenje principa S), a sama je otvarala konkretan fajl, pa se nije mogla testirati bez pravog fajla (kršenje principa D).
+
+### Nova podjela (`rezervacije.py`)
+
+| Klasa | Odgovornost |
+| --- | --- |
+| `Rezervacija` (dataclass) | podaci i obračun iznosa, validacija |
+| `IzvorPodataka` (Protocol) | ugovor za učitavanje |
+| `Izvjestavanje` (Protocol) | ugovor za izvještavanje |
+| `CsvIzvor` | čitanje CSV fajla |
+| `FajlIzvjestaj` | čuvanje iznosa u fajl |
+| `MailObavjestenje` | slanje obavještenja (simulacija) |
+| `ObradaRezervacija` | servis koji povezuje sve, prima zavisnosti kroz konstruktor |
+
+- **S:** svaka klasa ima jednu odgovornost.
+- **D:** `ObradaRezervacija` zna samo za `IzvorPodataka` i `Izvjestavanje`, a konkretne klase dobija spolja. Zato u testovima koristim `LazniIzvor` i `LazniIzvjestaj`.
+- **O:** novi izvor (npr. baza) ili novi izvještaj dodaje se kao nova klasa, bez izmjene servisa.
+
+### Testovi (`tests/test_rezervacije.py`)
+
+7 testova. Tri testiraju servis sa zamjenskim izvorom podataka, a ostali testiraju validaciju, CSV izvor, fajl izvještaj i mail.
+
+### Upotrijebljeni upit
+
+> Uloga: iskusni softverski arhitekta.
+> Zadatak: analizirati priloženi Python kod.
+> 1. Navesti narušene SOLID principe, sa brojem linije.
+> 2. Objasniti praktičnu posljedicu svakog narušavanja.
+> 3. Predložiti refaktoring uz kratak primjer.
+> 4. Predložiti tri testa koja potvrđuju da se ponašanje nije promijenilo.
+> Ograničenje: ne uvoditi apstrakcije koje problem ne zahtijeva.
+>
+> [kod klase UpravljanjeRezervacijama]
+
+### Problemi u polaznom kodu i ispravke
+
+1. `open()` bez `with`: fajlovi se ne zatvaraju. Sada se koristi `with`.
+2. Nema `encoding`, pa naša slova mogu da se pokvare. Dodato je `encoding="utf-8"`.
+3. Pristup preko indeksa (`r[1]`, `r[2]`) je nečitljiv. Sada se koristi `csv.DictReader` i dataclass sa imenovanim poljima.
+4. Ime fajla `izvjestaj.txt` je bilo fiksno u kodu. Sada se putanja prosljeđuje kroz konstruktor.
+5. Nije bilo provjere negativnih vrijednosti. Dodata je u `Rezervacija.__post_init__`.
+6. Prema ograničenju iz upita nisam uvodila posebnu apstrakciju za obračun (npr. tarife), jer zadatak to ne traži (YAGNI).
